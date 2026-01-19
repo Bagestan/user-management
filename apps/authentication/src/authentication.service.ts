@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
 import { LoginDto } from 'common/dtos/login.dto';
 import { RegisterDto } from 'common/dtos/register.dto';
-import { UserRepository } from './user.repository';
-import { JwtService } from '@nestjs/jwt';
 import { LoginResponseRto } from 'common/rtos/login-response.rto';
+import { RegisterResponseRto } from 'common/rtos/register-response.rto';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class AuthenticationService {
@@ -13,7 +14,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async registerUser(credentials: RegisterDto) {
+  async registerUser(credentials: RegisterDto): Promise<RegisterResponseRto> {
     try {
       const existingUser = await this.userRepository.findByEmail(
         credentials.email,
@@ -28,7 +29,7 @@ export class AuthenticationService {
 
       const user = await this.userRepository.create(credentials);
 
-      return { id: user._id, email: user.email };
+      return { id: `${user._id}`, email: user.email };
     } catch (error) {
       if (error instanceof RpcException) {
         throw error;
