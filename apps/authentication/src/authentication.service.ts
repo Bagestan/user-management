@@ -6,6 +6,9 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
 import { UserRepository } from './user.repository';
+import { hash, compare } from 'bcrypt';
+
+const BCRYPT_SALT_ROUNDS = 10;
 
 @Injectable()
 export class AuthenticationService {
@@ -27,7 +30,15 @@ export class AuthenticationService {
         });
       }
 
-      const user = await this.userRepository.create(credentials);
+      const hashedPassword = await hash(
+        credentials.password || '',
+        BCRYPT_SALT_ROUNDS,
+      );
+
+      const user = await this.userRepository.create({
+        email: credentials.email,
+        password: hashedPassword,
+      });
 
       return { id: `${user._id}`, email: user.email };
     } catch (error) {
@@ -42,18 +53,23 @@ export class AuthenticationService {
     }
   }
 
+  private async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.userRepository.findByEmail(email);
+
+    if (user && (await compare(password, user.password))) {
+      const { password: _, ...result } = user.toObject();
+      return result;
+    }
+
+    return null;
+  }
+
   async loginUser(credentials: LoginDto): Promise<LoginResponseRto> {
     try {
-      const user = await this.userRepository.findByEmail(credentials.email);
+      const { email, password } = credentials;
+      const user = await this.validateUser(email, password);
 
       if (!user) {
-        throw new RpcException({
-          statusCode: 401,
-          message: 'Invalid credentials',
-        });
-      }
-
-      if (user.password !== credentials.password) {
         throw new RpcException({
           statusCode: 401,
           message: 'Invalid credentials',
