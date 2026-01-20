@@ -3,6 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+
+const THROTTLE_TTL = 60000;
+const THROTTLE_LIMIT = 10;
 
 @Module({
   imports: [
@@ -24,8 +29,14 @@ import { GatewayService } from './gateway.service';
         inject: [ConfigService],
       },
     ]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: THROTTLE_TTL,
+        limit: THROTTLE_LIMIT,
+      },
+    ]),
   ],
   controllers: [GatewayController],
-  providers: [GatewayService],
+  providers: [GatewayService, { provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class GatewayModule {}
