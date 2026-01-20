@@ -1,3 +1,6 @@
+import { LoginDto } from '@common/dtos/login.dto';
+import { RegisterDto } from '@common/dtos/register.dto';
+import { JwtAuthGuard } from '@core/guards/jwt-auth.guard';
 import {
   Body,
   Controller,
@@ -9,9 +12,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { LoginDto } from 'common/dtos/login.dto';
-import { RegisterDto } from 'common/dtos/register.dto';
-import { JwtAuthGuard } from 'core/guards/jwt-auth.guard';
 import { firstValueFrom } from 'rxjs';
 
 @Controller()

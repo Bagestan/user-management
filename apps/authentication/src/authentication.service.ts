@@ -1,10 +1,10 @@
+import { LoginDto } from '@common/dtos/login.dto';
+import { RegisterDto } from '@common/dtos/register.dto';
+import { LoginResponseRto } from '@common/rtos/login-response.rto';
+import { RegisterResponseRto } from '@common/rtos/register-response.rto';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
-import { LoginDto } from 'common/dtos/login.dto';
-import { RegisterDto } from 'common/dtos/register.dto';
-import { LoginResponseRto } from 'common/rtos/login-response.rto';
-import { RegisterResponseRto } from 'common/rtos/register-response.rto';
 import { UserRepository } from './user.repository';
 
 @Injectable()
