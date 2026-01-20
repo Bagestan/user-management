@@ -5,7 +5,7 @@ import { RegisterResponseRto } from '@common/rtos/register-response.rto';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './users/user.repository';
 import { hash, compare } from 'bcrypt';
 
 const BCRYPT_SALT_ROUNDS = 10;

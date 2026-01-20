@@ -4,8 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
-import { UserRepository } from './user.repository';
-import { User, UserSchema } from './user.schema';
+import { UserRepository } from './users/user.repository';
+import { User, UserSchema } from './users/user.schema';
 
 @Module({
   imports: [
