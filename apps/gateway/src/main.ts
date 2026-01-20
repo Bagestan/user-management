@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { GatewayModule } from './gateway.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { LoggingInterceptor } from '@core/interceptors/logging/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
@@ -22,6 +23,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  app.useGlobalInterceptors(new LoggingInterceptor());
   await app.listen(process.env.GATEWAY_SERVICE_PORT || 3000);
 }
 bootstrap();
